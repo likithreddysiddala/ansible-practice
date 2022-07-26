@@ -1,1 +1,33 @@
 
+COMMANDS TO INSTALL ANSIBLE:
+
+# amazon-linux-extras install ansible2 -y
+# ansible --version
+# python --version
+# yum install python2-pip -y
+# pip install boto  (boto connect playbook to aws)
+# pip show boto
+# aws configure
+Access Key ID:
+Secret Access Key:
+Region:
+
+
+@@ Creating Ec2 instance using ansible playbook
+# cd /etc/ansible 
+# vi ec2.yml
+--- 
+ - hosts: localhost
+   gather_facts: True
+   tasks:
+     - name: creating Ec2 instance from ansible playbook
+       ec2:
+	 key_name: Ireland-Sasi
+	 region: eu-west-1
+         instance_type: t2.micro
+         image: ami-0d71ea30463e0ff8d
+         wait: yes
+         group: default
+         count: 1
+         vpc_subnet_id: subnet-020bebeb8c4a22059
+         assign_public_ip: yes
