@@ -1,0 +1,99 @@
+# yum install ansible
+# amazon-linux-extras install ansible2
+# ansible --version
+# cd /etc/ansible
+# ls
+
+Connecting one server to another server:
+
+create user in two server 
+
+MASTER:
+
+# useradd ansadmin
+# passwd ansadmin
+
+# visudo 
+Add this below line without password section 
+ansadmin        ALL=(ALL)       NOPASSWD: ALL
+# vi /etc/ssh/sshd_config
+change the below line from no to yes
+passwordauthonit yes
+# service sshd restart
+
+NODE:
+
+# useradd ansadmin
+# passwd ansadmin
+
+# visudo 
+Add this below line without password section 
+ansadmin        ALL=(ALL)       NOPASSWD: ALL
+# vi /etc/ssh/sshd_config
+change the below line from no to yes
+passwordauthonit yes
+# service sshd restart
+
+
+GENERATING SSH KEYS In master server:
+
+# su ansadmin
+# ssh-keygen
+     enter-enter-enter 
+# cd /home/ansadmin/.ssh  (keys installed location)
+# ssh-copy-id ansadmin@private ip node  (copying keys)
+      password of username 
+# ssh ansadmin@private ip node
+# hostname -i 
+# exit
+
+
+
+ADHOC COMMANDS:
+
+1.ansible all -a "df -h"
+2.ansible all -m yum -a "name=httpd state=latest" -b
+3.ansible all -m user -a "name=testuser password=<encrypted>"
+4.ansible all -m user -a "name=testuser state=absent"
+5.ansible all -m copy -a "src=/etc/ansible dest=/tmp/home" -b
+6.ansible all -m service -a "name=httpd state=started"
+7.ansible all -m service -a "name=httpd state=stopped"
+8.ansible localhost -m file -a "dest=/etc/ansible/test state=directory" -b
+
+
+##DEBUG-MODULE 
+
+---
+ - name: This is debug module to print msg
+   hosts: localhost
+   tasks:
+   - name: printing multiple lines
+     debug:
+      msg: "welcome to ansible playbooks"
+	  
+	  
+	  
+###file copy to localhost  
+	  
+---
+ - hosts: localhost
+   tasks:
+   - copy: src=/home/user/demo.txt dest=/tmp
+   - command: mkdir /tmp/yaml_files 
+
+   
+   
+  ## HTTPD SERVER
+  
+---
+ - name: insatlling httpd package
+   hosts: localhost
+   tasks:
+      - name: insatll httpd
+        yum:
+           name: httpd
+           state: present
+      - name: start httpd
+        service:
+           name: httpd
+           state: started
